@@ -25,6 +25,7 @@ func main() {
 	}
 }
 
+// serverWriter отправляет сообщение на сервер
 func serverWriter(conn net.Conn, msg []byte) {
 	_, err := conn.Write(msg)
 	if err != nil {

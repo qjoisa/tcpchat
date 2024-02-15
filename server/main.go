@@ -44,7 +44,6 @@ func main() {
 // broadcaster рассылает входящие сообщения всем клиентам
 // следит за подключением и отключением клиентов
 func broadcaster() {
-	// здесь хранятся все подключенные клиенты
 	clients := make(map[client]bool)
 	for {
 		select {
@@ -62,7 +61,7 @@ func broadcaster() {
 	}
 }
 
-// handleConn обрабатывает входящие сообщения от клиента
+// handleConn обрабатывает действия клиента
 func handleConn(conn net.Conn) {
 	ch := make(chan string)
 	go clientWriter(conn, ch)
@@ -80,8 +79,9 @@ func handleConn(conn net.Conn) {
 	conn.Close()
 }
 
+// clientReader читает входящие сообщения от клиента
 func clientReader(conn net.Conn) {
-	input := bufio.NewScanner(conn) // почему то это не работает
+	input := bufio.NewScanner(conn)
 	for input.Scan() {
 		messages <- conn.RemoteAddr().String() + ": " + input.Text()
 	}
@@ -97,6 +97,7 @@ func clientWriter(conn net.Conn, ch <-chan string) {
 	}
 }
 
+// writeMessages откправляет данные в чат
 func writeMessages(conn net.Conn, msg []byte) {
 	_, err := conn.Write(msg)
 	if err != nil {
