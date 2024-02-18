@@ -21,6 +21,15 @@ var (
 	messages = make(chan string)
 )
 
+type Serverer interface {
+	Start() error
+	broadcaster()
+	handleConn(conn net.Conn)
+	clientReader(conn net.Conn)
+	clientWriter(conn net.Conn, ch <-chan string)
+	writeMessages(conn net.Conn, msg []byte)
+}
+
 type Server struct {
 	Listener net.Listener
 }
